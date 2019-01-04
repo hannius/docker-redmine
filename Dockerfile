@@ -15,6 +15,9 @@ FROM ubuntu:xenial-20180705
 
 LABEL maintainer="sameer@damagehead.com"
 
+ARG TZ="Asia/Shanghai"
+ENV TZ ${TZ}
+
 ENV RUBY_VERSION=2.3 \
     REDMINE_VERSION=3.4.7 \
     REDMINE_USER="redmine" \
@@ -32,6 +35,9 @@ COPY --from=add-apt-repositories /etc/apt/trusted.gpg /etc/apt/trusted.gpg
 
 COPY --from=add-apt-repositories /etc/apt/sources.list /etc/apt/sources.list
 COPY --from=add-apt-repositories /etc/apt/sources.list.d/pgdg.list /etc/apt/sources.list.d/
+
+RUN ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime \
+ && echo ${TZ} > /etc/timezone
 
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
